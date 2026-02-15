@@ -1,0 +1,719 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+/* ===== Page Header ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+    padding: 8px 0;
+}
+
+.brand-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-mini span {
+    font-family: 'Sora', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #0F3D3E;
+    line-height: 1;
+}
+
+.brand-mini i {
+    width: 10px;
+    height: 10px;
+    background: #14B8A6;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    position: relative;
+}
+
+.header-btn:hover {
+    transform: translateY(-2px);
+    border-color: #14B8A6;
+    box-shadow: 0 10px 20px -5px rgba(20, 184, 166, 0.2);
+}
+
+.header-btn img {
+    width: 20px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.header-btn:hover img {
+    opacity: 1;
+}
+
+/* ===== Section Card ===== */
+
+.section-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+    margin-bottom: 28px;
+    transition: all 0.3s ease;
+}
+
+.section-card:hover {
+    box-shadow: 0 30px 60px -12px rgba(20, 184, 166, 0.25);
+}
+
+/* ===== Section Title ===== */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    width: 4px;
+    height: 16px;
+    background: #14B8A6;
+    border-radius: 4px;
+}
+
+.legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    background: #F8FAFC;
+    border-radius: 30px;
+}
+
+.legend span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+}
+
+/* Horizontal Scroll Container */
+
+.horizontal-scroll {
+    overflow-x: auto;
+    padding: 4px 0 12px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.chart-container-wide {
+    min-width: 800px;
+}
+
+/* Filter */
+
+.filter-select {
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 1px solid #E2E8F0;
+    background: #F8FAFC;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: #14B8A6;
+    background: white;
+}
+
+/* Chart Canvas */
+
+canvas {
+    max-height: 312px;
+    width: 100% !important;
+}
+
+/* ===== Category Spending Stats ===== */
+
+.category-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 8px;
+}
+
+.stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.stat-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-name span {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.stat-amount {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-bar-container {
+    width: 100%;
+    height: 8px;
+    background: #F1F5F9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.stat-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Custom styles for vibrant charts */
+.chart-vibrant {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+}
+
+/* Animation for charts */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.section-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+</style>
+
+<div class="page-header animate-slide-up">
+    <div class="brand-mini">
+        <span>Vault</span>
+        <i></i>
+    </div>
+    <div class="header-actions">
+        <div class="header-btn" onclick="openVideo()">
+            <img src="{{ url_for('static', filename='video-icon.png') }}" alt="Video">
+        </div>
+        <div class="header-btn" onclick="notifications()">
+            <img src="{{ url_for('static', filename='bell-icon.png') }}" alt="Notifications">
+            <span style="
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 8px;
+                height: 8px;
+                background: #EF4444;
+                border-radius: 50%;
+                border: 2px solid white;
+            "></span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 1. Budget vs Expenditure Bar Chart ===== -->
+
+<div class="section-card delay-1">
+
+    <div class="section-header">
+        <div class="section-title">
+            <i></i> Budget vs Expenditure
+        </div>
+
+        <select class="filter-select" id="categoryFilter" onchange="filterBarChart()">
+            <option value="all">All Categories</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="shopping">Shopping</option>
+            <option value="bills">Bills</option>
+            <option value="health">Health</option>
+        </select>
+    </div>
+
+    <div class="legend">
+        <span><div class="legend-dot" style="background:#065F46;"></div>Budget</span>
+        <span><div class="legend-dot" style="background:#6EE7B7;"></div>Expenditure</span>
+    </div>
+
+    <div class="horizontal-scroll">
+        <div class="chart-container-wide">
+            <canvas id="barChart" class="chart-vibrant"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== 2. Pie Chart ===== -->
+
+<div class="section-card delay-2">
+
+    <div class="section-header">
+        <div class="section-title">
+            <i></i> Expense Distribution
+        </div>
+        <div class="legend">
+            <span><div class="legend-dot" style="background:#14B8A6;"></div>By Category</span>
+        </div>
+    </div>
+
+    <canvas id="pieChart" class="chart-vibrant"></canvas>
+
+</div>
+
+<!-- ===== 3. Category Spending Stats (New Section) ===== -->
+
+<div class="section-card delay-3">
+
+    <div class="section-header">
+        <div class="section-title">
+            <i></i> Category Spending
+        </div>
+        <div class="legend">
+            <span><div class="legend-dot" style="background:#14B8A6;"></div>Spent vs Budget</span>
+        </div>
+    </div>
+
+    <div class="category-stats" id="categoryStats">
+        <!-- Stats will be populated by JavaScript -->
+    </div>
+
+</div>
+
+<!-- ===== 4. Monthly Projection Line Chart ===== -->
+
+<div class="section-card delay-4">
+
+    <div class="section-header">
+        <div class="section-title">
+            <i></i> Monthly Projection
+        </div>
+        <div class="legend">
+            <span><div class="legend-dot" style="background:#16A34A;"></div>Actual (90%)</span>
+            <span><div class="legend-dot" style="background:#DC2626;"></div>Predicted (10%)</span>
+        </div>
+    </div>
+
+    <canvas id="lineChart" class="chart-vibrant"></canvas>
+
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+/* ===== Bar Chart with Adaptive Y-axis ===== */
+
+const barCtx = document.getElementById('barChart');
+
+// Budget and expenditure data with higher standard deviation (20-80 range)
+const budgetData = [7500, 4200, 3500, 5800, 6300, 2800];
+const expenditureData = [5800, 3100, 2900, 4600, 3900, 2100];
+const categoryLabels = ['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Health'];
+const categoryColors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#9B87F8', '#FF9F1C', '#2EC4B6'];
+
+// Calculate max value for adaptive y-axis (add 4000 extra)
+const maxBarValue = Math.max(...budgetData, ...expenditureData) + 4000;
+
+// Create bar chart with zero gap between budget and expenditure bars, but gap between categories
+const barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+        labels: categoryLabels,
+        datasets: [
+            {
+                label: 'Budget',
+                data: budgetData,
+                backgroundColor: '#065F46',
+                borderRadius: 0,
+                barPercentage: 0.9,
+                categoryPercentage: 0.8,
+                borderWidth: 0,
+                hoverBackgroundColor: '#0A7A5A',
+            },
+            {
+                label: 'Expenditure',
+                data: expenditureData,
+                backgroundColor: '#6EE7B7',
+                borderRadius: 0,
+                barPercentage: 0.9,
+                categoryPercentage: 0.8,
+                borderWidth: 0,
+                hoverBackgroundColor: '#8EF5D0',
+            }
+        ]
+    },
+    options: {
+        plugins: { 
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#F8FAFC',
+                bodyColor: '#F1F5F9',
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: true,
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { 
+                grid: { display: false },
+                ticks: { font: { size: 11, weight: '500' } }
+            },
+            y: {
+                grid: { color: "#F1F5F9", drawBorder: false },
+                beginAtZero: true,
+                max: maxBarValue,
+                ticks: { 
+                    font: { size: 11 },
+                    callback: function(value) {
+                        return '₹' + value.toLocaleString();
+                    }
+                }
+            }
+        },
+        layout: {
+            padding: { top: 20, bottom: 10 }
+        }
+    }
+});
+
+/* ===== Filter Function - Shows Only Selected Category at the Start ===== */
+
+function filterBarChart() {
+    const filter = document.getElementById('categoryFilter').value;
+    
+    if (filter === 'all') {
+        // Restore original order with all labels and data
+        barChart.data.labels = categoryLabels;
+        barChart.data.datasets[0].data = budgetData;
+        barChart.data.datasets[1].data = expenditureData;
+    } else {
+        // Find the index of selected category
+        const categoryMap = {
+            'food': 0,
+            'transport': 1,
+            'entertainment': 2,
+            'shopping': 3,
+            'bills': 4,
+            'health': 5
+        };
+        
+        const selectedIndex = categoryMap[filter];
+        
+        if (selectedIndex !== undefined) {
+            // Create arrays with selected category first, then empty placeholders for others
+            // This maintains the original spacing and width
+            const newLabels = [categoryLabels[selectedIndex]];
+            const newBudgetData = [budgetData[selectedIndex]];
+            const newExpenditureData = [expenditureData[selectedIndex]];
+            
+            // Add empty placeholders for the remaining categories
+            // This preserves the original chart structure and spacing
+            for (let i = 0; i < categoryLabels.length - 1; i++) {
+                newLabels.push('');
+                newBudgetData.push(null);
+                newExpenditureData.push(null);
+            }
+            
+            barChart.data.labels = newLabels;
+            barChart.data.datasets[0].data = newBudgetData;
+            barChart.data.datasets[1].data = newExpenditureData;
+        }
+    }
+    
+    barChart.update();
+}
+
+/* ===== Vibrant Pie Chart ===== */
+
+const pieCtx = document.getElementById('pieChart');
+
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Food', 'Transport', 'Entertainment', 'Shopping', 'Bills', 'Health'],
+        datasets: [{
+            data: expenditureData,
+            backgroundColor: categoryColors,
+            borderColor: 'white',
+            borderWidth: 3,
+            hoverOffset: 15,
+            hoverBorderColor: '#FFFFFF',
+            hoverBorderWidth: 4,
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { 
+                    boxWidth: 14,
+                    padding: 16,
+                    font: { size: 12, weight: '500' }
+                },
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.label}: ₹${context.raw.toLocaleString()}`;
+                    }
+                }
+            }
+        },
+        cutout: '0%',
+        animation: {
+            animateRotate: true,
+            animateScale: true
+        }
+    }
+});
+
+/* ===== Category Spending Stats ===== */
+
+function populateCategoryStats() {
+    const statsContainer = document.getElementById('categoryStats');
+    let html = '';
+    
+    categoryLabels.forEach((category, index) => {
+        const spent = expenditureData[index];
+        const budget = budgetData[index];
+        const percentage = Math.round((spent / budget) * 100);
+        
+        html += `
+            <div class="stat-row">
+                <div class="stat-info">
+                    <div class="stat-name">
+                        <span style="background: ${categoryColors[index]};"></span>
+                        ${category}
+                    </div>
+                    <div class="stat-amount">₹${spent.toLocaleString()} of ₹${budget.toLocaleString()}</div>
+                </div>
+                <div class="stat-bar-container">
+                    <div class="stat-bar" style="width: ${percentage}%; background: ${categoryColors[index]};"></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    statsContainer.innerHTML = html;
+}
+
+// Call the function to populate stats
+populateCategoryStats();
+
+/* ===== Line Chart with Linear Prediction (Low Standard Deviation) ===== */
+
+const lineCtx = document.getElementById('lineChart');
+
+// Generate days
+const days = Array.from({length: 30}, (_, i) => i + 1);
+
+// Create linear data with very low standard deviation
+const lineData = Array.from({length: 30}, (_, i) => {
+    const baseValue = 1500 + 48 * i;
+    if (i < 27) {
+        const variation = (Math.random() * 20) - 10;
+        return Math.round(baseValue + variation);
+    } else {
+        return Math.round(1500 + 48 * 27 + 70 * (i - 26));
+    }
+});
+
+// Create gradient that goes from green to red
+const ctx = lineCtx.getContext('2d');
+const gradient = ctx.createLinearGradient(0, 0, 800, 0);
+gradient.addColorStop(0, '#16A34A');
+gradient.addColorStop(0.9, '#16A34A');
+gradient.addColorStop(0.9, '#DC2626');
+gradient.addColorStop(1, '#DC2626');
+
+new Chart(lineCtx, {
+    type: 'line',
+    data: {
+        labels: days,
+        datasets: [
+            {
+                label: 'Actual Spending',
+                data: lineData,
+                borderColor: gradient,
+                backgroundColor: 'transparent',
+                tension: 0.1,
+                borderWidth: 3,
+                pointRadius: 2,
+                pointHoverRadius: 5,
+                pointBackgroundColor: function(context) {
+                    const index = context.dataIndex;
+                    return index >= 27 ? '#DC2626' : '#16A34A';
+                },
+                pointBorderColor: 'white',
+                pointBorderWidth: 1.5,
+                fill: false,
+                spanGaps: true,
+                segment: {
+                    borderColor: function(context) {
+                        const index = context.p1DataIndex;
+                        return index >= 27 ? '#DC2626' : '#16A34A';
+                    }
+                }
+            }
+        ]
+    },
+    options: {
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.dataset.label || '';
+                        const value = context.raw;
+                        const day = context.label;
+                        return `${label} (Day ${day}): ₹${value}`;
+                    }
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { 
+                grid: { display: false },
+                title: {
+                    display: true,
+                    text: 'Day of Month',
+                    color: '#64748B',
+                    font: { size: 11, weight: '500' }
+                }
+            },
+            y: { 
+                grid: { color: "#F1F5F9" },
+                title: {
+                    display: true,
+                    text: 'Amount (₹)',
+                    color: '#64748B',
+                    font: { size: 11, weight: '500' }
+                },
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + value;
+                    }
+                }
+            }
+        },
+        elements: {
+            line: {
+                borderJoinStyle: 'round',
+                borderCapStyle: 'round'
+            }
+        }
+    }
+});
+
+/* ===== Video Button Function ===== */
+
+function openVideo() {
+    alert('📹 Educational Videos:\n• Budgeting Tips\n• Investment Strategies\n• Financial Planning');
+}
+
+function notifications() {
+    alert('3 new insights:\n• Spending increased by 12%\n• Budget alert: Entertainment\n• Saving opportunity detected');
+}
+
+/* ===== Additional Classes for Vibrancy ===== */
+
+const style = document.createElement('style');
+style.textContent = `
+    .chart-vibrant {
+        filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.1));
+        transition: filter 0.3s ease;
+    }
+    
+    .chart-vibrant:hover {
+        filter: drop-shadow(0 12px 20px rgba(20, 184, 166, 0.2));
+    }
+    
+    .filter-select option {
+        font-weight: 500;
+    }
+    
+    .section-card {
+        border: 1px solid rgba(203, 213, 225, 0.2);
+        backdrop-filter: blur(5px);
+    }
+`;
+document.head.appendChild(style);
+
+</script>
+
+{% endblock %}

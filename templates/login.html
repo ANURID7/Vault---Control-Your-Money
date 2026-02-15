@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault - Control Your Money</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary: #0F3D3E;
+    --accent: #14B8A6;
+    --bg: #EEF2F7;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+}
+
+/* Restrict to mobile only */
+@media (min-width: 769px) {
+    body::before {
+        content: "Vault is available only on mobile devices.";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 22px;
+        font-weight: 600;
+    }
+    .container {
+        display: none;
+    }
+}
+
+.container {
+    max-width: 480px;
+    margin: auto;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Branding */
+.brand {
+    font-family: 'Sora', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -1.8px;
+    color: #0F3D3E;
+    margin-bottom: 12px;
+    line-height: 1;
+    display: flex;
+    justify-content: center;    
+    align-items: flex-end;
+    gap: 8px;
+    width: 100%;                
+    text-align: center;
+}
+
+.brand span {
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    display: inline-block;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+/* Buttons */
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.btn {
+    width: 88%;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    background: #E5E7EB;
+    color: #1F2937;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+.btn:hover {
+    background: #D1D5DB;
+}
+
+/* Icon placeholders */
+.btn img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+/* Email Form */
+.email-form {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.email-form input {
+    width: 88%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #D1D5DB;
+    font-size: 14px;
+}
+
+.email-form button {
+    width: 88%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.footer {
+    margin-top: 36px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div>
+        <div class="brand">
+            Vault<span></span>
+        </div>
+        <div class="tagline">Control Your Money</div>
+        <div class="description">
+            Plan expenses, track budgets, and stay financially aware with Vault.
+        </div>
+    </div>
+
+    <div class="auth-buttons" id="authButtons">
+        <button class="btn">
+            <img src="{{ url_for('static', filename='google.png') }}">
+            Continue With Google
+        </button>
+
+        <button class="btn" onclick="showEmailForm()">
+            <img src="{{ url_for('static', filename='email.png') }}">
+            Continue With Email
+        </button>
+
+        <button class="btn">
+            <img src="{{ url_for('static', filename='phone.png') }}">
+            Continue With Phone
+        </button>
+    </div>
+
+    <!-- Email Login Form -->
+    <form class="email-form" id="emailForm" onsubmit="redirectHome(event)">
+        <input type="email" placeholder="Enter your email" required>
+        <input type="password" placeholder="Enter your password" required>
+        <button type="submit">Continue</button>
+    </form>
+
+    <div class="footer">
+        By continuing, you agree to our Terms & Privacy Policy.
+    </div>
+</div>
+
+<script>
+function showEmailForm() {
+    document.getElementById('authButtons').style.display = 'none';
+    document.getElementById('emailForm').style.display = 'flex';
+}
+
+function redirectHome(event) {
+    event.preventDefault();
+    window.location.href = "/home";
+}
+</script>
+
+</body>
+</html>

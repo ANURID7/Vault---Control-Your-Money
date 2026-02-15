@@ -1,0 +1,2405 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    /* ===== Financial Theme Variables ===== */
+    :root {
+        --primary: #0F3D3E;
+        --primary-light: #1A5A5B;
+        --primary-dark: #0A2D2E;
+        --accent: #14B8A6;
+        --accent-soft: rgba(20, 184, 166, 0.12);
+        --accent-gradient: linear-gradient(145deg, #14B8A6, #0D9488);
+        --success: #10B981;
+        --success-soft: rgba(16, 185, 129, 0.12);
+        --warning: #F59E0B;
+        --warning-soft: rgba(245, 158, 11, 0.12);
+        --danger: #EF4444;
+        --danger-soft: rgba(239, 68, 68, 0.12);
+        --bg-main: #EEF2F7;
+        --bg-card: rgba(255, 255, 255, 0.95);
+        --text-primary: #0F172A;
+        --text-secondary: #475569;
+        --text-tertiary: #64748B;
+        --border-light: rgba(203, 213, 225, 0.4);
+        --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        --shadow-hover: 0 30px 60px -12px rgba(20, 184, 166, 0.25);
+    }
+
+    /* ===== Global Styles ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--bg-main);
+        font-family: 'Inter', sans-serif;
+        color: var(--text-primary);
+    }
+
+    .container {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 20px 20px 30px;
+        position: relative;
+    }
+
+    /* ===== Premium Header ===== */
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        padding: 8px 0;
+    }
+
+    .brand-mini {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .brand-mini span {
+        font-family: 'Sora', sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(145deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .brand-mini i {
+        width: 8px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 2px;
+        display: inline-block;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .header-btn:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 20px -5px rgba(20, 184, 166, 0.2);
+    }
+
+    .header-btn img {
+        width: 20px;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .header-btn:hover img {
+        opacity: 1;
+    }
+
+    /* ===== Wealth Score Card ===== */
+    .wealth-score-card {
+        background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+        border-radius: 32px;
+        padding: 24px;
+        margin-bottom: 24px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-card);
+    }
+
+    .wealth-score-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .wealth-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wealth-label {
+        font-size: 14px;
+        opacity: 0.8;
+        letter-spacing: 0.5px;
+    }
+
+    .wealth-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 6px 12px;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .wealth-main {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wealth-amount {
+        font-size: 42px;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .wealth-change {
+        font-size: 14px;
+        background: rgba(16, 185, 129, 0.2);
+        padding: 4px 10px;
+        border-radius: 30px;
+        color: #10B981;
+        font-weight: 600;
+    }
+
+    .wealth-metrics {
+        display: flex;
+        gap: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .wealth-metric {
+        flex: 1;
+    }
+
+    .metric-label {
+        font-size: 12px;
+        opacity: 0.7;
+        margin-bottom: 4px;
+    }
+
+    .metric-value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    /* ===== Interactive Finance Card ===== */
+    .finance-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-light);
+        border-radius: 28px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-card);
+        transition: all 0.3s ease;
+    }
+
+    .finance-card:hover {
+        box-shadow: var(--shadow-hover);
+    }
+
+    /* Summary Cards */
+    .summary-cards {
+        display: flex;
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        flex: 1;
+        padding: 16px;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #F8FAFC, #F1F5F9);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .summary-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(145deg, transparent, rgba(255, 255, 255, 0.8));
+        pointer-events: none;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .summary-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .summary-amount {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .income {
+        color: #16A34A;
+    }
+
+    .expense {
+        color: #DC2626;
+    }
+
+    /* ===== Mobile-Optimized Banking Action Buttons ===== */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin: 20px 0 8px;
+        width: 100%;
+    }
+
+    .action-btn {
+        flex: 1;
+        height: 52px;
+        border-radius: 12px;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: -0.2px;
+        color: #1E293B;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        user-select: none;
+        border: 1px solid;
+    }
+
+    /* Subtle color overlays for each button - always present */
+    .action-btn.budget {
+        background: #E8F0FE;
+        border-color: #BAC8DC;
+    }
+
+    .action-btn.expense {
+        background: #FEE9E7;
+        border-color: #FACDC9;
+    }
+
+    .action-btn.pay {
+        background: #E3F2ED;
+        border-color: #B8D9D2;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .action-btn {
+            height: 48px;
+            font-size: 14px;
+        }
+        .action-buttons {
+            gap: 8px;
+        }
+    }
+
+    /* Progress Ring */
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .progress-ring {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .progress-ring svg {
+        width: 100px;
+        height: 100px;
+        transform: rotate(-90deg);
+    }
+
+    .progress-ring circle {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+    }
+
+    .progress-ring-bg {
+        stroke: #E2E8F0;
+    }
+
+    .progress-ring-fill {
+        stroke: var(--accent);
+        stroke-dasharray: 251.2;
+        stroke-dashoffset: calc(251.2 * (1 - 0.74));
+        transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .progress-percent {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .progress-label {
+        font-size: 10px;
+        color: var(--text-tertiary);
+    }
+
+    .progress-stats {
+        flex: 1;
+    }
+
+    .progress-stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .stat-label-small {
+        font-size: 13px;
+        color: var(--text-secondary);
+    }
+
+    .stat-value-small {
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* Quick Stats */
+    .quick-stats-row {
+        display: flex;
+        gap: 16px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 2px solid var(--border-light);
+    }
+
+    .stat-item {
+        flex: 1;
+        text-align: center;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .stat-value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .stat-value.negative {
+        color: var(--danger);
+    }
+
+    .stat-value.positive {
+        color: var(--success);
+    }
+
+    /* ===== Smart Categories ===== */
+    .section-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-light);
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title i {
+        width: 4px;
+        height: 16px;
+        background: var(--accent);
+        border-radius: 4px;
+    }
+
+    .section-link {
+        font-size: 13px;
+        color: var(--accent);
+        font-weight: 600;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 30px;
+        background: var(--accent-soft);
+        transition: all 0.2s ease;
+    }
+
+    .section-link:hover {
+        background: var(--accent);
+        color: white;
+    }
+
+    /* Category Items with Progress - Exactly 3 items */
+    .category-item {
+        margin-bottom: 16px;
+    }
+
+    .category-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .category-name {
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .category-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+    }
+
+    .category-dot.food {
+        background: #F59E0B;
+    }
+
+    .category-dot.transport {
+        background: #3B82F6;
+    }
+
+    .category-dot.entertainment {
+        background: #EC4899;
+    }
+
+    .category-stats {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .category-amount {
+        color: var(--text-primary);
+        margin-right: 8px;
+    }
+
+    .category-percent {
+        color: var(--text-tertiary);
+        font-weight: 500;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #E2E8F0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .progress-fill.food {
+        background: linear-gradient(90deg, #F59E0B, #FBBF24);
+    }
+
+    .progress-fill.transport {
+        background: linear-gradient(90deg, #3B82F6, #60A5FA);
+    }
+
+    .progress-fill.entertainment {
+        background: linear-gradient(90deg, #EC4899, #F472B6);
+    }
+
+    /* ===== Transaction Items ===== */
+    .transaction-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        background: #F8FAFC;
+        border-radius: 18px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .transaction-item:hover {
+        background: white;
+        transform: translateX(4px);
+        box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .transaction-details {
+        flex: 1;
+    }
+
+    .transaction-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .transaction-name {
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    .transaction-amount {
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .transaction-amount.expense {
+        color: var(--danger);
+    }
+
+    .transaction-amount.income {
+        color: var(--success);
+    }
+
+    .transaction-meta {
+        display: flex;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-tertiary);
+    }
+
+    .transaction-time {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* ===== Success Message Card ===== */
+    .success-message {
+        background: linear-gradient(145deg, #F0FDF4, #DCFCE7);
+        border-radius: 24px;
+        padding: 16px 20px;
+        margin: 20px 0;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideDown 0.3s ease;
+    }
+
+    .success-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--success);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+    }
+
+    .success-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #15803D;
+    }
+
+    /* ===== Red Alert Prediction Card ===== */
+    .prediction-card {
+        background: linear-gradient(145deg, #FEF2F2, #FEE2E2);
+        border-radius: 24px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.2);
+    }
+
+    .prediction-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .prediction-message {
+        font-size: 16px;
+        font-weight: 700;
+        color: #B91C1C;
+        line-height: 1.4;
+    }
+
+    .see-details {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: #B91C1C;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .see-details:hover {
+        transform: translateX(4px);
+        opacity: 0.9;
+    }
+
+    /* ===== Financial Literacy Section - Premium Redesign ===== */
+    .literacy-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .literacy-title-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .literacy-title-section i {
+        width: 4px;
+        height: 20px;
+        background: var(--accent);
+        border-radius: 4px;
+    }
+
+    .literacy-title-section h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .language-pills {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .lang-pill {
+        padding: 6px 14px;
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .lang-pill.active {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    .lang-pill:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+    }
+
+    .resources-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 16px 0;
+    }
+
+    .resource-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: #F8FAFC;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .resource-row:hover {
+        background: white;
+        border-color: var(--accent);
+        transform: translateX(4px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .resource-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .resource-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .resource-metadata {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 12px;
+    }
+
+    .resource-source {
+        color: var(--accent);
+        font-weight: 500;
+    }
+
+    .resource-type {
+        color: var(--text-tertiary);
+    }
+
+    .resource-arrow {
+        font-size: 18px;
+        color: var(--text-tertiary);
+        transition: all 0.2s ease;
+    }
+
+    .resource-row:hover .resource-arrow {
+        color: var(--accent);
+        transform: translateX(4px);
+    }
+
+    .featured-resource {
+        background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+        border-radius: 20px;
+        padding: 20px;
+        margin: 16px 0 8px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .featured-resource::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -10%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 15s linear infinite;
+    }
+
+    .featured-resource:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .featured-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.8;
+        margin-bottom: 8px;
+    }
+
+    .featured-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        max-width: 80%;
+    }
+
+    .featured-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: white;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        padding: 8px 16px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-top: 8px;
+    }
+
+    .featured-link span {
+        transition: transform 0.2s ease;
+    }
+
+    .featured-resource:hover .featured-link span {
+        transform: translateX(4px);
+    }
+
+    .resource-footer {
+        margin-top: 16px;
+        padding: 12px 16px;
+        background: #F8FAFC;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid var(--border-light);
+    }
+
+    .resource-footer:hover {
+        background: white;
+        border-color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .footer-text {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .footer-link {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+    }
+
+    /* ===== Modal Styles ===== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-container {
+        background: white;
+        border-radius: 32px;
+        width: 100%;
+        max-width: 440px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-hover);
+        animation: modalSlideUp 0.3s ease;
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border-light);
+        position: relative;
+    }
+
+    .modal-header h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .modal-back {
+        position: absolute;
+        left: 20px;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .modal-back:hover {
+        opacity: 0.8;
+        transform: translateX(-2px);
+    }
+
+    .modal-content {
+        padding: 24px;
+    }
+
+    .modal-field {
+        margin-bottom: 20px;
+    }
+
+    .modal-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .modal-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        background: #F8FAFC;
+    }
+
+    .modal-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: white;
+    }
+
+    .modal-input::placeholder {
+        color: var(--text-tertiary);
+        opacity: 0.5;
+    }
+
+    .modal-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        background: #F8FAFC;
+        color: var(--text-primary);
+        cursor: pointer;
+    }
+
+    .modal-select:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 14px;
+        border-radius: 16px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .modal-btn.primary {
+        background: var(--accent);
+        color: white;
+    }
+
+    .modal-btn.primary:hover {
+        background: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .modal-btn.secondary {
+        background: #F1F5F9;
+        color: var(--text-secondary);
+    }
+
+    .modal-btn.secondary:hover {
+        background: #E2E8F0;
+    }
+
+    /* Upload Button Styles */
+    .upload-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 16px;
+        border: 2px dashed var(--accent);
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .upload-btn:hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .scan-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 16px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .scan-btn:hover {
+        background: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .scan-btn:active {
+        transform: translateY(0);
+    }
+
+    .scan-btn:disabled {
+        background: #E2E8F0;
+        color: var(--text-tertiary);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .file-name {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    /* GPay-style Pay Modal */
+    .gpay-container {
+        text-align: center;
+        padding: 16px 0;
+    }
+
+    .gpay-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(145deg, #1A5A5B, #0F3D3E);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .gpay-amount {
+        font-size: 42px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .gpay-amount small {
+        font-size: 18px;
+        font-weight: 400;
+        color: var(--text-tertiary);
+    }
+
+    .gpay-recipient {
+        font-size: 16px;
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+    }
+
+    .gpay-numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 24px 0;
+    }
+
+    .gpay-key {
+        padding: 16px;
+        font-size: 24px;
+        font-weight: 500;
+        color: var(--text-primary);
+        background: #F8FAFC;
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+    .gpay-key:hover {
+        background: white;
+        border-color: var(--accent);
+        transform: translateY(-2px);
+    }
+
+    .gpay-key:active {
+        transform: translateY(0);
+    }
+
+    .gpay-key.delete {
+        font-size: 20px;
+        color: var(--danger);
+    }
+
+    .gpay-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.5s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+</style>
+
+<!-- Main Container -->
+<div class="container">
+
+    <!-- Premium Header -->
+    <div class="page-header animate-slide-up">
+        <div class="brand-mini">
+            <span>Vault</span>
+            <i></i>
+        </div>
+        <div class="header-actions">
+            <div class="header-btn" onclick="video()">
+                <img src="{{ url_for('static', filename='video-icon.png') }}" alt="Video">
+            </div>
+            <div class="header-btn" onclick="notifications()">
+                <img src="{{ url_for('static', filename='bell-icon.png') }}" alt="Notifications">
+                <span style="
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    width: 8px;
+                    height: 8px;
+                    background: var(--danger);
+                    border-radius: 50%;
+                    border: 2px solid white;
+                "></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Container (hidden by default) -->
+    <div id="successMessageContainer" style="display: none;"></div>
+
+    <!-- Main Finance Card -->
+    <div class="finance-card animate-slide-up delay-1">
+        <!-- Progress Ring -->
+        <div class="progress-container">
+            <div class="progress-ring">
+                <svg>
+                    <circle class="progress-ring-bg" cx="50" cy="50" r="40"></circle>
+                    <circle class="progress-ring-fill" cx="50" cy="50" r="40"></circle>
+                </svg>
+                <div class="progress-text">
+                    <div class="progress-percent" id="progressPercent">74%</div>
+                    <div class="progress-label">used</div>
+                </div>
+            </div>
+            <div class="progress-stats">
+                <div class="progress-stat-item">
+                    <span class="stat-label-small">Monthly Budget</span>
+                    <span class="stat-value-small" id="monthlyBudget">₹45,000</span>
+                </div>
+                <div class="progress-stat-item">
+                    <span class="stat-label-small">Spent</span>
+                    <span class="stat-value-small" id="totalSpent">₹33,250</span>
+                </div>
+                <div class="progress-stat-item">
+                    <span class="stat-label-small">Remaining</span>
+                    <span class="stat-value-small" id="remainingBudget">₹11,750</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats-row">
+            <div class="stat-item">
+                <div class="stat-label">Spent Today</div>
+                <div class="stat-value negative" id="spentToday">-₹1,250</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Avg / Day</div>
+                <div class="stat-value" id="avgPerDay">₹1,080</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Left</div>
+                <div class="stat-value positive" id="leftAmount">+₹11,750</div>
+            </div>
+        </div>
+
+        <!-- Professional Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn budget" onclick="openBudgetModal()">Set Budget</button>
+            <button class="action-btn expense" onclick="openExpenseModal()">Add Expense</button>
+            <button class="action-btn pay" onclick="openPayModal()">Pay</button>
+        </div>
+    </div>
+
+    <!-- Red Alert Prediction Card -->
+    <div class="prediction-card animate-slide-up delay-3">
+        <div class="prediction-content">
+            <div class="prediction-message" id="predictionMessage">Exceeding budget by ₹4,200</div>
+            <div class="see-details" onclick="showPredictionDetails()" style="color: rgb(60, 103, 187);">
+                View detailed analysis →
+            </div>
+        </div>
+    </div>
+
+    <!-- Wealth Score Card -->
+    <div class="wealth-score-card animate-slide-up delay-2">
+        <div class="wealth-header">
+            <span class="wealth-label">Total Savings</span>
+            <span class="wealth-badge">Vault</span>
+        </div>
+        <div class="wealth-main">
+            <span class="wealth-amount" id="totalSavings">₹19,750</span>
+            <span class="wealth-change" id="savingsChange">+12.5%</span>
+        </div>
+        <div class="wealth-metrics">
+            <div class="wealth-metric">
+                <div class="metric-label">This Month</div>
+                <div class="metric-value" id="thisMonthSavings">₹11,750</div>
+            </div>
+            <div class="wealth-metric">
+                <div class="metric-label">Last Month</div>
+                <div class="metric-value" id="lastMonthSavings">₹8,000</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Categories - Exactly 3 items -->
+    <div class="section-card animate-slide-up delay-3">
+        <div class="section-header">
+            <div class="section-title">
+                <i></i> Top Spending
+            </div>
+            <div class="section-link" onclick="viewAllCategories()">View All</div>
+        </div>
+
+        <div class="category-item" id="categoryFood">
+            <div class="category-header">
+                <div class="category-name">
+                    <span class="category-dot food"></span>
+                    Food & Dining
+                </div>
+                <div class="category-stats">
+                    <span class="category-amount" id="foodAmount">₹4,500</span>
+                    <span class="category-percent" id="foodPercent">42%</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill food" id="foodProgress" style="width: 42%"></div>
+            </div>
+        </div>
+
+        <div class="category-item" id="categoryTransport">
+            <div class="category-header">
+                <div class="category-name">
+                    <span class="category-dot transport"></span>
+                    Transport
+                </div>
+                <div class="category-stats">
+                    <span class="category-amount" id="transportAmount">₹2,100</span>
+                    <span class="category-percent" id="transportPercent">19%</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill transport" id="transportProgress" style="width: 19%"></div>
+            </div>
+        </div>
+
+        <div class="category-item" id="categoryEntertainment">
+            <div class="category-header">
+                <div class="category-name">
+                    <span class="category-dot entertainment"></span>
+                    Entertainment
+                </div>
+                <div class="category-stats">
+                    <span class="category-amount" id="entertainmentAmount">₹1,800</span>
+                    <span class="category-percent" id="entertainmentPercent">16%</span>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill entertainment" id="entertainmentProgress" style="width: 16%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Financial Literacy Section - Premium Redesign ===== -->
+    <div class="section-card animate-slide-up delay-4">
+        <div class="section-header">
+            <div class="section-title">
+                <i></i> Financial Literacy
+            </div>
+        </div>
+
+        <!-- Language Pills - Clean, No Fill on Active -->
+        <div class="language-pills">
+            <span class="lang-pill" onclick="switchLanguage('english')">English</span>
+            <span class="lang-pill" onclick="switchLanguage('hindi')">हिन्दी</span>
+            <span class="lang-pill" onclick="switchLanguage('tamil')">தமிழ்</span>
+            <span class="lang-pill" onclick="switchLanguage('telugu')">తెలుగు</span>
+            <span class="lang-pill" onclick="switchLanguage('kannada')">ಕನ್ನಡ</span>
+            <span class="lang-pill" onclick="switchLanguage('malayalam')">മലയാളം</span>
+        </div>
+
+        <!-- Featured Resource - Only visible in English -->
+        <div class="featured-resource" id="featuredResource" onclick="openResource('featured')">
+            <div class="featured-label">FEATURED</div>
+            <div class="featured-title">Beginner’s Guide to Personal Finance (Zerodha Varsity)</div>
+            <div class="featured-link">
+                Watch now <span>→</span>
+            </div>
+        </div>
+
+        <!-- Resources Container -->
+        <div class="resources-container" id="resourcesList">
+            <!-- Resources will be populated by JavaScript -->
+        </div>
+
+        <!-- CDSL IPF Note -->
+        <div class="resource-footer" onclick="openCDSL()">
+            <span class="footer-text">Free investor education in 12 languages by CDSL IPF</span>
+            <span class="footer-link">cdslipf.com →</span>
+        </div>
+    </div>
+
+    <!-- Recent Transactions - Max 3 items -->
+    <div class="section-card animate-slide-up delay-5">
+        <div class="section-header">
+            <div class="section-title">
+                <i></i> Recent Activity
+            </div>
+            <div class="section-link" onclick="viewAllTransactions()">See All</div>
+        </div>
+
+        <div class="transaction-list" id="transactionList">
+            <div class="transaction-item" onclick="viewTransaction('swiggy')">
+                <div class="transaction-details">
+                    <div class="transaction-main">
+                        <span class="transaction-name">Swiggy</span>
+                        <span class="transaction-amount expense">-₹450</span>
+                    </div>
+                    <div class="transaction-meta">
+                        <span class="transaction-time">2 hours ago</span>
+                        <span>Food</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="transaction-item" onclick="viewTransaction('uber')">
+                <div class="transaction-details">
+                    <div class="transaction-main">
+                        <span class="transaction-name">Uber</span>
+                        <span class="transaction-amount expense">-₹320</span>
+                    </div>
+                    <div class="transaction-meta">
+                        <span class="transaction-time">5 hours ago</span>
+                        <span>Transport</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="transaction-item" onclick="viewTransaction('amazon')">
+                <div class="transaction-details">
+                    <div class="transaction-main">
+                        <span class="transaction-name">Amazon</span>
+                        <span class="transaction-amount expense">-₹899</span>
+                    </div>
+                    <div class="transaction-meta">
+                        <span class="transaction-time">Yesterday</span>
+                        <span>Shopping</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Set Budget Modal ===== -->
+<div class="modal-overlay" id="budgetModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-back" onclick="closeBudgetModal()">back</div>
+            <h3>Set Monthly Budget</h3>
+        </div>
+        <div class="modal-content">
+            <div class="modal-field">
+                <label class="modal-label">Budget Amount (₹)</label>
+                <input type="number" class="modal-input" id="budgetAmount" placeholder="Enter amount" value="45000">
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Category</label>
+                <select class="modal-select" id="budgetCategory">
+                    <option value="overall">Overall Budget</option>
+                    <option value="food">Food & Dining</option>
+                    <option value="transport">Transport</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="bills">Bills</option>
+                    <option value="health">Health</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Month</label>
+                <select class="modal-select" id="budgetMonth">
+                    <option value="current">Current Month</option>
+                    <option value="next">Next Month</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeBudgetModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="saveBudget()">Save Budget</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Add Expense Modal ===== -->
+<div class="modal-overlay" id="expenseModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-back" onclick="closeExpenseModal()">back</div>
+            <h3>Add Expense</h3>
+        </div>
+        <div class="modal-content">
+            <div class="modal-field">
+                <label class="modal-label">Amount (₹)</label>
+                <input type="number" class="modal-input" id="expenseAmount" placeholder="Enter amount">
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Category</label>
+                <select class="modal-select" id="expenseCategory">
+                    <option value="Food">Food & Dining</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Health">Health</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Description</label>
+                <input type="text" class="modal-input" id="expenseDescription" placeholder="e.g., Grocery store, Uber ride">
+            </div>
+            <div class="modal-field">
+                <label class="modal-label">Payment Method</label>
+                <select class="modal-select" id="expensePayment">
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Net Banking">Net Banking</option>
+                </select>
+            </div>
+            
+            <!-- New Upload Section -->
+            <div class="modal-field">
+                <label class="modal-label">Upload Transaction Details (PDF)</label>
+                <input type="file" id="pdfUpload" accept=".pdf" style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('pdfUpload').click()">
+                    <span>📄</span> Upload PDF
+                </button>
+                <div id="fileName" class="file-name"></div>
+                <button class="scan-btn" id="scanBtn" onclick="scanPDF()" disabled>
+                    <span>🔍</span> Scan Now
+                </button>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeExpenseModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="saveExpense()">Add Expense</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== GPay-style Pay Modal ===== -->
+<div class="modal-overlay" id="payModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-back" onclick="closePayModal()">back</div>
+            <h3>Make Payment</h3>
+        </div>
+        <div class="modal-content">
+            <div class="gpay-container">
+                <div class="gpay-icon">₹</div>
+                <div class="gpay-amount" id="gpayAmountDisplay">₹0</div>
+                <div class="gpay-recipient" id="gpayRecipientDisplay">Enter amount to send</div>
+                
+                <div class="gpay-numpad">
+                    <div class="gpay-key" onclick="addNumber('1')">1</div>
+                    <div class="gpay-key" onclick="addNumber('2')">2</div>
+                    <div class="gpay-key" onclick="addNumber('3')">3</div>
+                    <div class="gpay-key" onclick="addNumber('4')">4</div>
+                    <div class="gpay-key" onclick="addNumber('5')">5</div>
+                    <div class="gpay-key" onclick="addNumber('6')">6</div>
+                    <div class="gpay-key" onclick="addNumber('7')">7</div>
+                    <div class="gpay-key" onclick="addNumber('8')">8</div>
+                    <div class="gpay-key" onclick="addNumber('9')">9</div>
+                    <div class="gpay-key" onclick="addNumber('00')">00</div>
+                    <div class="gpay-key" onclick="addNumber('0')">0</div>
+                    <div class="gpay-key delete" onclick="deleteNumber()">⌫</div>
+                </div>
+                
+                <input type="hidden" id="payAmount" value="">
+                
+                <div class="gpay-actions">
+                    <button class="modal-btn secondary" onclick="closePayModal()">Cancel</button>
+                    <button class="modal-btn primary" onclick="savePayment()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // ===== Modal Functions =====
+    function openBudgetModal() {
+        document.getElementById('budgetModal').classList.add('active');
+    }
+
+    function closeBudgetModal() {
+        document.getElementById('budgetModal').classList.remove('active');
+    }
+
+    function openExpenseModal() {
+        document.getElementById('expenseModal').classList.add('active');
+        // Reset file upload state
+        document.getElementById('pdfUpload').value = '';
+        document.getElementById('fileName').textContent = '';
+        document.getElementById('scanBtn').disabled = true;
+    }
+
+    function closeExpenseModal() {
+        document.getElementById('expenseModal').classList.remove('active');
+    }
+
+    function openPayModal() {
+        document.getElementById('payModal').classList.add('active');
+        // Reset pay amount
+        document.getElementById('payAmount').value = '';
+        document.getElementById('gpayAmountDisplay').textContent = '₹0';
+        document.getElementById('gpayRecipientDisplay').textContent = 'Enter amount to send';
+    }
+
+    function closePayModal() {
+        document.getElementById('payModal').classList.remove('active');
+    }
+
+    // GPay numpad functions
+    function addNumber(num) {
+        const input = document.getElementById('payAmount');
+        const currentValue = input.value;
+        const newValue = currentValue + num;
+        input.value = newValue;
+        
+        // Update display
+        const displayAmount = document.getElementById('gpayAmountDisplay');
+        const amount = parseInt(newValue) || 0;
+        displayAmount.textContent = '₹' + amount.toLocaleString();
+        
+        // Update recipient hint
+        const recipientDisplay = document.getElementById('gpayRecipientDisplay');
+        if (amount > 0) {
+            recipientDisplay.textContent = 'Sending to: Contact';
+        } else {
+            recipientDisplay.textContent = 'Enter amount to send';
+        }
+    }
+
+    function deleteNumber() {
+        const input = document.getElementById('payAmount');
+        const currentValue = input.value;
+        input.value = currentValue.slice(0, -1);
+        
+        // Update display
+        const displayAmount = document.getElementById('gpayAmountDisplay');
+        const amount = parseInt(input.value) || 0;
+        displayAmount.textContent = '₹' + amount.toLocaleString();
+        
+        // Update recipient hint
+        const recipientDisplay = document.getElementById('gpayRecipientDisplay');
+        if (amount > 0) {
+            recipientDisplay.textContent = 'Sending to: Contact';
+        } else {
+            recipientDisplay.textContent = 'Enter amount to send';
+        }
+    }
+
+    // File upload handler
+    document.getElementById('pdfUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+            document.getElementById('scanBtn').disabled = false;
+        }
+    });
+
+    // Scan PDF function
+    function scanPDF() {
+        const totalAmount = 860; // 240 + 310 + 310
+        
+        // Show success message in modal
+        const modal = document.getElementById('expenseModal');
+        const modalContent = modal.querySelector('.modal-content');
+        const originalContent = modalContent.innerHTML;
+        
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 30px;">✓</div>
+                <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Scan Complete!</div>
+                <div style="font-size: 12px; color: var(--text-tertiary);">Updated successfully</div>
+            </div>
+        `;
+        
+        // Update all financial values
+        updateFinancialsFromScan(totalAmount);
+        
+        // Add three transactions to recent activity
+        addToRecentTransactions('Starbucks', 310, 'Food');
+        addToRecentTransactions('Starbucks', 310, 'Food');
+        addToRecentTransactions('Swiggy', 240, 'Food');
+        
+        setTimeout(() => {
+            modalContent.innerHTML = originalContent;
+            modal.classList.remove('active');
+        }, 2000);
+    }
+
+    // Update financials from scan
+    function updateFinancialsFromScan(amount) {
+        // Get current values
+        const monthlyBudget = parseInt(document.getElementById('monthlyBudget').textContent.replace(/[₹,]/g, ''));
+        const currentSpent = parseInt(document.getElementById('totalSpent').textContent.replace(/[₹,]/g, ''));
+        const currentTodaySpent = parseInt(document.getElementById('spentToday').textContent.replace(/[₹,-]/g, ''));
+        const currentTotalSavings = parseInt(document.getElementById('totalSavings').textContent.replace(/[₹,]/g, ''));
+        const currentMonthSavings = parseInt(document.getElementById('thisMonthSavings').textContent.replace(/[₹,]/g, ''));
+        
+        // Calculate new values
+        const newSpent = currentSpent + amount;
+        const newRemaining = monthlyBudget - newSpent;
+        const newTodaySpent = currentTodaySpent + amount;
+        const newTotalSavings = currentTotalSavings - amount;
+        const newMonthSavings = currentMonthSavings - amount;
+        const newPercent = Math.round((newSpent / monthlyBudget) * 100);
+        
+        // Update spent and remaining near ring
+        document.getElementById('totalSpent').textContent = '₹' + newSpent.toLocaleString();
+        document.getElementById('remainingBudget').textContent = '₹' + newRemaining.toLocaleString();
+        
+        // Update quick stats
+        document.getElementById('spentToday').textContent = '-₹' + newTodaySpent.toLocaleString();
+        document.getElementById('leftAmount').textContent = '+₹' + newRemaining.toLocaleString();
+        
+        // Update wealth score card
+        document.getElementById('totalSavings').textContent = '₹' + newTotalSavings.toLocaleString();
+        document.getElementById('thisMonthSavings').textContent = '₹' + newMonthSavings.toLocaleString();
+        
+        // Update progress ring
+        document.getElementById('progressPercent').textContent = newPercent + '%';
+        const dashOffset = 251.2 * (1 - newPercent / 100);
+        const progressRing = document.querySelector('.progress-ring-fill');
+        if (progressRing) progressRing.style.strokeDashoffset = dashOffset;
+        
+        // Update category spending (add to Food category)
+        updateCategorySpending(amount, 'Food');
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const budgetModal = document.getElementById('budgetModal');
+        const expenseModal = document.getElementById('expenseModal');
+        const payModal = document.getElementById('payModal');
+        
+        if (event.target === budgetModal) closeBudgetModal();
+        if (event.target === expenseModal) closeExpenseModal();
+        if (event.target === payModal) closePayModal();
+    }
+
+    // Show success message inside modal
+    function showModalSuccess(message, modalId) {
+        const modal = document.getElementById(modalId);
+        const modalContent = modal.querySelector('.modal-content');
+        
+        // Store original content to restore later
+        const originalContent = modalContent.innerHTML;
+        
+        // Replace modal content with success message
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 30px;">✓</div>
+                <div style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Success!</div>
+                <div style="font-size: 14px; color: var(--text-secondary);">${message}</div>
+            </div>
+        `;
+        
+        // Close modal and restore content after 2 seconds
+        setTimeout(() => {
+            modalContent.innerHTML = originalContent;
+            modal.classList.remove('active');
+        }, 2000);
+    }
+
+    // ===== Save Functions =====
+    function saveBudget() {
+        const amount = parseInt(document.getElementById('budgetAmount').value);
+        const category = document.getElementById('budgetCategory').options[document.getElementById('budgetCategory').selectedIndex].text;
+        
+        if (!amount) return;
+        
+        // Update monthly budget
+        document.getElementById('monthlyBudget').textContent = '₹' + amount.toLocaleString();
+        
+        // Recalculate remaining based on current spent
+        const currentSpent = parseInt(document.getElementById('totalSpent').textContent.replace(/[₹,]/g, ''));
+        const newRemaining = amount - currentSpent;
+        document.getElementById('remainingBudget').textContent = '₹' + newRemaining.toLocaleString();
+        document.getElementById('leftAmount').textContent = '+₹' + newRemaining.toLocaleString();
+        
+        // Update progress percent
+        const newPercent = Math.round((currentSpent / amount) * 100);
+        document.getElementById('progressPercent').textContent = newPercent + '%';
+        const dashOffset = 251.2 * (1 - newPercent / 100);
+        const progressRing = document.querySelector('.progress-ring-fill');
+        if (progressRing) progressRing.style.strokeDashoffset = dashOffset;
+        
+        // Show success message in modal before closing
+        showModalSuccess('Budget set successfully!', 'budgetModal');
+    }
+
+    function saveExpense() {
+        const amount = parseInt(document.getElementById('expenseAmount').value);
+        const category = document.getElementById('expenseCategory').value;
+        const description = document.getElementById('expenseDescription').value || category;
+        
+        if (!amount) return;
+        
+        // Get current values
+        const monthlyBudget = parseInt(document.getElementById('monthlyBudget').textContent.replace(/[₹,]/g, ''));
+        const currentSpent = parseInt(document.getElementById('totalSpent').textContent.replace(/[₹,]/g, ''));
+        const currentTodaySpent = parseInt(document.getElementById('spentToday').textContent.replace(/[₹,-]/g, ''));
+        const currentTotalSavings = parseInt(document.getElementById('totalSavings').textContent.replace(/[₹,]/g, ''));
+        const currentMonthSavings = parseInt(document.getElementById('thisMonthSavings').textContent.replace(/[₹,]/g, ''));
+        
+        // Calculate new values
+        const newSpent = currentSpent + amount;
+        const newRemaining = monthlyBudget - newSpent;
+        const newTodaySpent = currentTodaySpent + amount;
+        const newTotalSavings = currentTotalSavings - amount;
+        const newMonthSavings = currentMonthSavings - amount;
+        const newPercent = Math.round((newSpent / monthlyBudget) * 100);
+        
+        // Update spent and remaining near ring
+        document.getElementById('totalSpent').textContent = '₹' + newSpent.toLocaleString();
+        document.getElementById('remainingBudget').textContent = '₹' + newRemaining.toLocaleString();
+        
+        // Update quick stats
+        document.getElementById('spentToday').textContent = '-₹' + newTodaySpent.toLocaleString();
+        document.getElementById('leftAmount').textContent = '+₹' + newRemaining.toLocaleString();
+        
+        // Update wealth score card
+        document.getElementById('totalSavings').textContent = '₹' + newTotalSavings.toLocaleString();
+        document.getElementById('thisMonthSavings').textContent = '₹' + newMonthSavings.toLocaleString();
+        
+        // Update progress ring
+        document.getElementById('progressPercent').textContent = newPercent + '%';
+        const dashOffset = 251.2 * (1 - newPercent / 100);
+        const progressRing = document.querySelector('.progress-ring-fill');
+        if (progressRing) progressRing.style.strokeDashoffset = dashOffset;
+        
+        // Update top spending categories (with null checks)
+        try {
+            updateCategorySpending(amount, category);
+        } catch (e) {
+            console.log('Category update error:', e);
+        }
+        
+        // Add to recent transactions (max 3)
+        addToRecentTransactions(description, amount, category);
+        
+        // Show success message in modal before closing
+        showModalSuccess('Transaction added successfully!', 'expenseModal');
+    }
+
+    function savePayment() {
+        const amount = parseInt(document.getElementById('payAmount').value);
+        if (!amount) return;
+        
+        // Get current values
+        const monthlyBudget = parseInt(document.getElementById('monthlyBudget').textContent.replace(/[₹,]/g, ''));
+        const currentSpent = parseInt(document.getElementById('totalSpent').textContent.replace(/[₹,]/g, ''));
+        const currentTodaySpent = parseInt(document.getElementById('spentToday').textContent.replace(/[₹,-]/g, ''));
+        const currentTotalSavings = parseInt(document.getElementById('totalSavings').textContent.replace(/[₹,]/g, ''));
+        const currentMonthSavings = parseInt(document.getElementById('thisMonthSavings').textContent.replace(/[₹,]/g, ''));
+        
+        // Calculate new values
+        const newSpent = currentSpent + amount;
+        const newRemaining = monthlyBudget - newSpent;
+        const newTodaySpent = currentTodaySpent + amount;
+        const newTotalSavings = currentTotalSavings - amount;
+        const newMonthSavings = currentMonthSavings - amount;
+        const newPercent = Math.round((newSpent / monthlyBudget) * 100);
+        
+        // Update spent and remaining near ring
+        document.getElementById('totalSpent').textContent = '₹' + newSpent.toLocaleString();
+        document.getElementById('remainingBudget').textContent = '₹' + newRemaining.toLocaleString();
+        
+        // Update quick stats
+        document.getElementById('spentToday').textContent = '-₹' + newTodaySpent.toLocaleString();
+        document.getElementById('leftAmount').textContent = '+₹' + newRemaining.toLocaleString();
+        
+        // Update wealth score card
+        document.getElementById('totalSavings').textContent = '₹' + newTotalSavings.toLocaleString();
+        document.getElementById('thisMonthSavings').textContent = '₹' + newMonthSavings.toLocaleString();
+        
+        // Update progress ring
+        document.getElementById('progressPercent').textContent = newPercent + '%';
+        const dashOffset = 251.2 * (1 - newPercent / 100);
+        const progressRing = document.querySelector('.progress-ring-fill');
+        if (progressRing) progressRing.style.strokeDashoffset = dashOffset;
+        
+        // Update top spending categories (default to Other for payments) with null checks
+        try {
+            updateCategorySpending(amount, 'Other');
+        } catch (e) {
+            console.log('Category update error:', e);
+        }
+        
+        // Add to recent transactions (max 3)
+        addToRecentTransactions('Payment Sent', amount, 'Transfer');
+        
+        // Show success message in modal before closing
+        showModalSuccess('Payment successful!', 'payModal');
+    }
+
+    function updateCategorySpending(amount, category) {
+        // Define category limits
+        const categoryLimits = {
+            'Food': 8000,
+            'Transport': 4000,
+            'Entertainment': 3000,
+            'Shopping': 5000,
+            'Bills': 6000,
+            'Health': 2000,
+            'Other': 5000,
+            'Transfer': 5000
+        };
+        
+        // Safely get elements
+        const foodAmountEl = document.getElementById('foodAmount');
+        const transportAmountEl = document.getElementById('transportAmount');
+        const entertainmentAmountEl = document.getElementById('entertainmentAmount');
+        const foodPercentEl = document.getElementById('foodPercent');
+        const transportPercentEl = document.getElementById('transportPercent');
+        const entertainmentPercentEl = document.getElementById('entertainmentPercent');
+        const foodProgressEl = document.getElementById('foodProgress');
+        const transportProgressEl = document.getElementById('transportProgress');
+        const entertainmentProgressEl = document.getElementById('entertainmentProgress');
+        
+        if (!foodAmountEl || !transportAmountEl || !entertainmentAmountEl) {
+            console.log('Category elements not found');
+            return;
+        }
+        
+        // Get current category amounts
+        let foodAmount = parseInt(foodAmountEl.textContent.replace(/[₹,]/g, ''));
+        let transportAmount = parseInt(transportAmountEl.textContent.replace(/[₹,]/g, ''));
+        let entertainmentAmount = parseInt(entertainmentAmountEl.textContent.replace(/[₹,]/g, ''));
+        
+        // Update the appropriate category
+        if (category === 'Food') {
+            foodAmount += amount;
+            foodAmountEl.textContent = '₹' + foodAmount.toLocaleString();
+            const foodPercent = Math.min(100, Math.round((foodAmount / categoryLimits['Food']) * 100));
+            if (foodPercentEl) foodPercentEl.textContent = foodPercent + '%';
+            if (foodProgressEl) foodProgressEl.style.width = foodPercent + '%';
+        } 
+        else if (category === 'Transport') {
+            transportAmount += amount;
+            transportAmountEl.textContent = '₹' + transportAmount.toLocaleString();
+            const transportPercent = Math.min(100, Math.round((transportAmount / categoryLimits['Transport']) * 100));
+            if (transportPercentEl) transportPercentEl.textContent = transportPercent + '%';
+            if (transportProgressEl) transportProgressEl.style.width = transportPercent + '%';
+        }
+        else if (category === 'Entertainment') {
+            entertainmentAmount += amount;
+            entertainmentAmountEl.textContent = '₹' + entertainmentAmount.toLocaleString();
+            const entertainmentPercent = Math.min(100, Math.round((entertainmentAmount / categoryLimits['Entertainment']) * 100));
+            if (entertainmentPercentEl) entertainmentPercentEl.textContent = entertainmentPercent + '%';
+            if (entertainmentProgressEl) entertainmentProgressEl.style.width = entertainmentPercent + '%';
+        }
+        else {
+            // For other categories, add to the smallest current category to maintain top 3
+            const categories = [
+                { name: 'Food', amount: foodAmount, element: 'food' },
+                { name: 'Transport', amount: transportAmount, element: 'transport' },
+                { name: 'Entertainment', amount: entertainmentAmount, element: 'entertainment' }
+            ];
+            
+            // Find the smallest category
+            const smallest = categories.reduce((min, cat) => cat.amount < min.amount ? cat : min);
+            
+            if (smallest.name === 'Food') {
+                foodAmount += amount;
+                foodAmountEl.textContent = '₹' + foodAmount.toLocaleString();
+                const foodPercent = Math.min(100, Math.round((foodAmount / categoryLimits['Food']) * 100));
+                if (foodPercentEl) foodPercentEl.textContent = foodPercent + '%';
+                if (foodProgressEl) foodProgressEl.style.width = foodPercent + '%';
+            } else if (smallest.name === 'Transport') {
+                transportAmount += amount;
+                transportAmountEl.textContent = '₹' + transportAmount.toLocaleString();
+                const transportPercent = Math.min(100, Math.round((transportAmount / categoryLimits['Transport']) * 100));
+                if (transportPercentEl) transportPercentEl.textContent = transportPercent + '%';
+                if (transportProgressEl) transportProgressEl.style.width = transportPercent + '%';
+            } else {
+                entertainmentAmount += amount;
+                entertainmentAmountEl.textContent = '₹' + entertainmentAmount.toLocaleString();
+                const entertainmentPercent = Math.min(100, Math.round((entertainmentAmount / categoryLimits['Entertainment']) * 100));
+                if (entertainmentPercentEl) entertainmentPercentEl.textContent = entertainmentPercent + '%';
+                if (entertainmentProgressEl) entertainmentProgressEl.style.width = entertainmentPercent + '%';
+            }
+        }
+        
+        // Sort categories to keep top 3
+        try {
+            sortTopCategories();
+        } catch (e) {
+            console.log('Sort error:', e);
+        }
+    }
+
+    function sortTopCategories() {
+        // Get all category elements
+        const categoryFood = document.getElementById('categoryFood');
+        const categoryTransport = document.getElementById('categoryTransport');
+        const categoryEntertainment = document.getElementById('categoryEntertainment');
+        
+        if (!categoryFood || !categoryTransport || !categoryEntertainment) return;
+        
+        // Get amounts
+        const foodAmount = parseInt(document.getElementById('foodAmount')?.textContent.replace(/[₹,]/g, '') || 0);
+        const transportAmount = parseInt(document.getElementById('transportAmount')?.textContent.replace(/[₹,]/g, '') || 0);
+        const entertainmentAmount = parseInt(document.getElementById('entertainmentAmount')?.textContent.replace(/[₹,]/g, '') || 0);
+        
+        const categoryItems = [
+            { element: categoryFood, amount: foodAmount },
+            { element: categoryTransport, amount: transportAmount },
+            { element: categoryEntertainment, amount: entertainmentAmount }
+        ];
+        
+        // Sort by amount descending
+        categoryItems.sort((a, b) => b.amount - a.amount);
+        
+        // Get the container
+        const categoriesContainer = document.querySelector('.section-card.delay-3 .category-item:first-child')?.parentNode;
+        if (!categoriesContainer) return;
+        
+        // Reorder elements
+        for (let i = 0; i < categoryItems.length; i++) {
+            if (categoryItems[i].element) {
+                categoriesContainer.appendChild(categoryItems[i].element);
+            }
+        }
+    }
+
+    function addToRecentTransactions(name, amount, category) {
+        const transactionList = document.getElementById('transactionList');
+        if (!transactionList) return;
+        
+        const timeString = 'Just now';
+        
+        // Create new transaction element
+        const newTransaction = document.createElement('div');
+        newTransaction.className = 'transaction-item';
+        newTransaction.setAttribute('onclick', "viewTransaction('" + name.toLowerCase().replace(/\s/g, '') + "')");
+        newTransaction.innerHTML = `
+            <div class="transaction-details">
+                <div class="transaction-main">
+                    <span class="transaction-name">${name}</span>
+                    <span class="transaction-amount expense">-₹${amount.toLocaleString()}</span>
+                </div>
+                <div class="transaction-meta">
+                    <span class="transaction-time">${timeString}</span>
+                    <span>${category}</span>
+                </div>
+            </div>
+        `;
+        
+        // Insert at the top
+        transactionList.insertBefore(newTransaction, transactionList.firstChild);
+        
+        // Keep only 3 items
+        while (transactionList.children.length > 3) {
+            transactionList.removeChild(transactionList.lastChild);
+        }
+    }
+
+    // ===== Original Functions =====
+    function search() { alert('Search transactions, categories, or insights...'); }
+    function notifications() { alert('3 new notifications'); }
+    function showIncomeDetails() { alert('Income breakdown'); }
+    function showExpenseDetails() { alert('Expense breakdown'); }
+    function viewAllCategories() { alert('All Categories'); }
+    function viewAllTransactions() { alert('Last 10 transactions'); }
+    function viewTransaction(name) { alert('Transaction details'); }
+    function showPredictionDetails() { alert('AI Analysis'); }
+    function video() { alert('Video tutorials'); }
+
+    // Financial Literacy Resources Database
+    const resourcesDB = {
+        english: [
+            { title: "Personal Finance Basics: Beginners Guide", source: "Money Instructor", type: "Video · 5 min", link: "openResource('blog')" },
+            { title: "Stock Market Basics for Beginners", source: "Zerodha Varsity", type: "Course · Free", link: "openResource('varsity')" },
+            { title: "Better Money Habits", source: "Bank of America", type: "Official Handbook", link: "openResource('sebi')" },
+            { title: "CashCourse (NEFE)", source: "NEFE", type: "Course · Free", link: "openResource('ebook')" }
+        ],
+        hindi: [
+            { title: "50/30/20 बजट नियम", source: "NerdWallet हिंदी", type: "लेख · 5 मिनट", link: "openResource('blog-hi')" },
+            { title: "शेयर बाजार की बुनियादी बातें", source: "Zerodha वर्सिटी", type: "कोर्स · मुफ्त", link: "openResource('varsity-hi')" },
+            { title: "SEBI निवेशक गाइड", source: "SEBI", type: "आधिकारिक हैंडबुक", link: "openResource('sebi-hi')" },
+            { title: "वित्तीय स्वतंत्रता की ओर", source: "Ministry of Finance", type: "मुफ्त ई-पुस्तक", link: "openResource('ebook-hi')" }
+        ],
+        tamil: [
+            { title: "50/30/20 பட்ஜெட் விதி", source: "NerdWallet தமிழ்", type: "கட்டுரை · 5 நிமிடம்", link: "openResource('blog-ta')" },
+            { title: "பங்குச் சந்தை அடிப்படைகள்", source: "Zerodha வார்சிட்டி", type: "பாடநெறி · இலவசம்", link: "openResource('varsity-ta')" },
+            { title: "SEBI முதலீட்டாளர் வழிகாட்டி", source: "SEBI", type: "அதிகாரப்பூர்வ கையேடு", link: "openResource('sebi-ta')" },
+            { title: "நிதிச் சுதந்திரம் நோக்கி", source: "Ministry of Finance", type: "இலவச மின்-நூல்", link: "openResource('ebook-ta')" }
+        ],
+        telugu: [
+            { title: "50/30/20 బడ్జెట్ నియమం", source: "NerdWallet తెలుగు", type: "వ్యాసం · 5 నిమిషాలు", link: "openResource('blog-te')" },
+            { title: "స్టాక్ మార్కెట్ ప్రాథమికాలు", source: "Zerodha వర్సిటీ", type: "కోర్సు · ఉచితం", link: "openResource('varsity-te')" },
+            { title: "SEBI పెట్టుబడిదారుల గైడ్", source: "SEBI", type: "అధికారిక హ్యాండ్బుక్", link: "openResource('sebi-te')" },
+            { title: "ఆర్థిక స్వేచ్ఛ వైపు", source: "Ministry of Finance", type: "ఉచిత ఇ-పుస్తకం", link: "openResource('ebook-te')" }
+        ],
+        kannada: [
+            { title: "50/30/20 ಬಜೆಟ್ ನಿಯಮ", source: "NerdWallet ಕನ್ನಡ", type: "ಲೇಖನ · 5 ನಿಮಿಷಗಳು", link: "openResource('blog-kn')" },
+            { title: "ಷೇರು ಮಾರುಕಟ್ಟೆ ಮೂಲಗಳು", source: "Zerodha ವರ್ಸಿಟಿ", type: "ಕೋರ್ಸ್ · ಉಚಿತ", link: "openResource('varsity-kn')" },
+            { title: "SEBI ಹೂಡಿಕೆದಾರರ ಮಾರ್ಗದರ್ಶಿ", source: "SEBI", type: "ಅಧಿಕೃತ ಕೈಪಿಡಿ", link: "openResource('sebi-kn')" },
+            { title: "ಹಣಕಾಸು ಸ್ವಾತಂತ್ರ್ಯದ ಕಡೆಗೆ", source: "Ministry of Finance", type: "ಉಚಿತ ಇ-ಪುಸ್ತಕ", link: "openResource('ebook-kn')" }
+        ],
+        malayalam: [
+            { title: "50/30/20 ബജറ്റ് നിയമം", source: "NerdWallet മലയാളം", type: "ലേഖനം · 5 മിനിറ്റ്", link: "openResource('blog-ml')" },
+            { title: "സ്റ്റോക്ക് മാർക്കറ്റ് അടിസ്ഥാനങ്ങൾ", source: "Zerodha വാഴ്സിറ്റി", type: "കോഴ്സ് · സൗജന്യം", link: "openResource('varsity-ml')" },
+            { title: "SEBI നിക്ഷേപക ഗൈഡ്", source: "SEBI", type: "ഔദ്യോഗിക കൈപ്പുസ്തകം", link: "openResource('sebi-ml')" },
+            { title: "സാമ്പത്തിക സ്വാതന്ത്ര്യത്തിലേക്ക്", source: "Ministry of Finance", type: "സൗജന്യ ഇ-ബുക്ക്", link: "openResource('ebook-ml')" }
+        ]
+    };
+
+    let currentLanguage = 'english';
+
+    function switchLanguage(lang) {
+        currentLanguage = lang;
+        
+        // Update active state on language pills
+        document.querySelectorAll('.lang-pill').forEach(pill => {
+            pill.classList.remove('active');
+        });
+        
+        const activePill = Array.from(document.querySelectorAll('.lang-pill')).find(pill => {
+            const text = pill.textContent;
+            if (lang === 'english') return text === 'English';
+            if (lang === 'hindi') return text === 'हिन्दी';
+            if (lang === 'tamil') return text === 'தமிழ்';
+            if (lang === 'telugu') return text === 'తెలుగు';
+            if (lang === 'kannada') return text === 'ಕನ್ನಡ';
+            if (lang === 'malayalam') return text === 'മലയാളം';
+            return false;
+        });
+        
+        if (activePill) {
+            activePill.classList.add('active');
+        }
+        
+        // Show/hide featured resource based on language
+        const featuredResource = document.getElementById('featuredResource');
+        if (lang === 'english') {
+            featuredResource.style.display = 'block';
+        } else {
+            featuredResource.style.display = 'none';
+        }
+        
+        loadResources(lang);
+    }
+
+    function loadResources(lang) {
+        const resourcesList = document.getElementById('resourcesList');
+        const resources = resourcesDB[lang] || resourcesDB.english;
+        
+        let html = '';
+        resources.forEach(resource => {
+            html += `
+                <div class="resource-row" onclick="${resource.link}">
+                    <div class="resource-info">
+                        <div class="resource-title">${resource.title}</div>
+                        <div class="resource-metadata">
+                            <span class="resource-source">${resource.source}</span>
+                            <span class="resource-type">${resource.type}</span>
+                        </div>
+                    </div>
+                    <div class="resource-arrow">→</div>
+                </div>
+            `;
+        });
+        
+        resourcesList.innerHTML = html;
+    }
+
+function openResource(type) {
+    const resources = {
+        // English resources
+        'blog': 'https://www.youtube.com/watch?v=WiH2T933xn8',
+        'varsity': 'https://zerodha.com/varsity/',
+        'sebi': 'https://bettermoneyhabits.bankofamerica.com',
+        'ebook': 'https://www.nefe.org/initiatives/cashcourse.aspx',
+        'featured': 'https://www.youtube.com/watch?v=6sq2o1atWLY',
+        
+        // Hindi
+        'blog-hi': 'https://hindi.nerdwallet.com',
+        'varsity-hi': 'https://zerodha.com/varsity-hi/',
+        'sebi-hi': 'https://www.sebi.gov.in/hindi/',
+        'ebook-hi': 'https://www.finmin.nic.in/hindi/investor-awareness',
+        
+        // Tamil
+        'blog-ta': 'https://tamil.nerdwallet.com',
+        'varsity-ta': 'https://zerodha.com/varsity-ta/',
+        'sebi-ta': 'https://www.sebi.gov.in/tamil/',
+        'ebook-ta': 'https://www.finmin.nic.in/tamil/investor-awareness',
+        
+        // Telugu
+        'blog-te': 'https://telugu.nerdwallet.com',
+        'varsity-te': 'https://zerodha.com/varsity-te/',
+        'sebi-te': 'https://www.sebi.gov.in/telugu/',
+        'ebook-te': 'https://www.finmin.nic.in/telugu/investor-awareness',
+        
+        // Kannada
+        'blog-kn': 'https://kannada.nerdwallet.com',
+        'varsity-kn': 'https://zerodha.com/varsity-kn/',
+        'sebi-kn': 'https://www.sebi.gov.in/kannada/',
+        'ebook-kn': 'https://www.finmin.nic.in/kannada/investor-awareness',
+        
+        // Malayalam
+        'blog-ml': 'https://malayalam.nerdwallet.com',
+        'varsity-ml': 'https://zerodha.com/varsity-ml/',
+        'sebi-ml': 'https://www.sebi.gov.in/malayalam/',
+        'ebook-ml': 'https://www.finmin.nic.in/malayalam/investor-awareness'
+    };
+    
+    if (resources[type]) {
+        window.open(resources[type], '_blank');
+    } else {
+        alert('Resource link coming soon');
+    }
+}
+
+function openCDSL() {
+    window.open('https://www.cdslindia.com/ipf.aspx', '_blank');
+}
+
+function viewAllResources() {
+    window.open('https://www.sebi.gov.in/investor-awareness', '_blank');
+}
+
+    // Load default resources and set active class on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('resourcesList')) {
+            loadResources('english');
+            
+            // Set active class on English pill
+            const englishPill = Array.from(document.querySelectorAll('.lang-pill')).find(
+                pill => pill.textContent === 'English'
+            );
+            if (englishPill) {
+                englishPill.classList.add('active');
+            }
+            
+            // Featured resource is visible by default for English
+            const featuredResource = document.getElementById('featuredResource');
+            featuredResource.style.display = 'block';
+        }
+        
+        // Animate progress ring
+        setTimeout(() => {
+            const ring = document.querySelector('.progress-ring-fill');
+            if (ring) ring.style.strokeDashoffset = '65.3';
+        }, 500);
+    });
+</script>
+
+{% endblock %}
